@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "gymapp_bun_migration",
-    "slug": "gymapp_bun_migration",
+    "name": "gymapp",
+    "slug": "gymapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "gymappbunmigration",
+    "scheme": "gymapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -19,11 +19,13 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.leesf.gymapp"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",
@@ -38,11 +40,23 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-dev-client",
+        {
+          "launchMode": "most-recent"
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": true,
+      "buildCacheProvider": {
+        "plugin": "expo-build-disk-cache",
+        "options": {
+          "cacheDir": "node_modules/.expo-build-disk-cache"
+        }
+      }
     }
   }
 }
