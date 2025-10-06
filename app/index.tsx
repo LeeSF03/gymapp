@@ -17,8 +17,8 @@ export default function WelcomePage() {
             {" Welcome To\nGym Life "}
           </Text>
           <Text className="text-center" variant="muted">
-            lorum asdfasdf asdfasdf asdfasdf asdfasdf asdfasdf asdfasdfasdfas
-            asdfasdfas asdfasdf
+            Your journey to a healthier you starts here. Track your progress,
+            join classes, and connect with our community.
           </Text>
         </View>
       </View>

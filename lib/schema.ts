@@ -15,13 +15,13 @@ export const signUpSchema = z
     error: "Passwords do not match",
     path: ["confirmPassword"],
   })
-export type SignUpForm = z.infer<typeof signUpSchema>
+export type SignUpFormScheme = z.infer<typeof signUpSchema>
 
 export const loginSchema = z.object({
   email: z.email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters long"),
 })
-export type LoginForm = z.infer<typeof loginSchema>
+export type LoginFormScheme = z.infer<typeof loginSchema>
 
 export const otpScheme = z
   .string()
