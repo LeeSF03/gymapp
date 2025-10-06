@@ -2,13 +2,18 @@ import { Image } from "expo-image"
 import { View } from "react-native"
 import { Text } from "@/components/ui/text"
 import { Button } from "@/components/ui/button"
-import { Link } from "expo-router"
+import { Link, useLocalSearchParams } from "expo-router"
 import { KeyboardAvoidingView } from "react-native-keyboard-controller"
 import { OtpInput } from "@/components/otp-input"
 import { useState } from "react"
+import { authClient } from "@/lib/auth"
 
 export default function LoginPage() {
   const [otp, setOtp] = useState("")
+  const { email, type } = useLocalSearchParams<{
+    email: string
+    type: "sign-in" | "email-verification " | "forget-password"
+  }>()
 
   return (
     <KeyboardAvoidingView
