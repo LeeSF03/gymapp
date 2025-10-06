@@ -15,7 +15,7 @@ import "react-native-reanimated"
 import "./../global.css"
 
 export const unstable_settings = {
-  initialRouteName: "welcome",
+  // initialRouteName: "welcome",
   // anchor: "(tabs)",
 }
 
@@ -32,6 +32,7 @@ export default function RootLayout() {
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="sign-up" options={{ headerShown: false }} />
             <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Screen name="otp" options={{ headerShown: false }} />
             {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
             {/* <Stack.Screen */}
             {/*   name="modal" */}

@@ -18,10 +18,10 @@ export default function LoginPage() {
           source={require("@/assets/images/dumbbell.svg")}
           style={{ width: 40, height: 40 }}
         />
-        <Text variant="h3">Gym Life</Text>
+        <Text variant="h4">Gym Life</Text>
       </View>
       <View className="gap-y-2">
-        <Text variant="h2" className="text-center">
+        <Text variant="h3" className="text-center">
           Welcome Back
         </Text>
         <Text variant="muted" className="text-center">

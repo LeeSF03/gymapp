@@ -15,6 +15,7 @@ const textVariants = cva("text-foreground text-base", {
       p: "mt-3 leading-7 sm:mt-6",
       large: "text-lg font-semibold",
       small: "text-sm font-medium leading-none",
+      xs: "text-xs font-light",
       muted: "text-muted-foreground text-sm",
     },
   },
