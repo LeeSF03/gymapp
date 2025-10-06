@@ -8,6 +8,19 @@ import { OtpInput } from "@/components/otp-input"
 import { useState } from "react"
 import { otpScheme } from "@/lib/schema"
 import { $ZodIssue } from "better-auth"
+import { OtpHeader } from "@/components/otp/otp-header"
+
+type OtpPageQueryParam =
+  | {
+      email: string
+      type: "sign-in" | "email-verification"
+      password: string
+    }
+  | {
+      email: string
+      type: "forget-password"
+      password: undefined
+    }
 
 export default function OtpPage() {
   const [otp, setOtp] = useState("")
@@ -27,31 +40,15 @@ export default function OtpPage() {
     }
   }
 
-  const { email, type } = useLocalSearchParams<{
-    email: string
-    type: "sign-in" | "email-verification " | "forget-password"
-  }>()
+  // const { email, type, password } = useLocalSearchParams<OtpPageQueryParam>()
 
   return (
     <KeyboardAvoidingView
       behavior="padding"
       className="flex-1 items-center justify-center gap-y-8 bg-black px-8"
     >
-      <Image
-        className="flex w-full flex-row items-center justify-center "
-        source={require("@/assets/images/dumbbell.svg")}
-        style={{ width: 40, height: 40 }}
-      />
-      <View className="gap-y-2">
-        <Text variant="h3" className="text-center">
-          Enter Verification Code
-        </Text>
-        <Text variant="muted" className="text-center">
-          A 6-digit verification code has been sent to your registered email
-          address.
-        </Text>
-      </View>
-      <View className="w-full gap-y-1.5">
+      <OtpHeader />
+      <View className="w-full">
         <OtpInput otp={otp} handleOtpChange={handleOtpChange} />
         {otpError.length > 0 &&
           otpError.map(({ message }, index) => (
