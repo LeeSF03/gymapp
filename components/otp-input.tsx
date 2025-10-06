@@ -21,12 +21,7 @@ function OtpInput({ otp, handleOtpChange, length = 6 }: OtpInputProps) {
     setIsFocused(true)
   }
   const onChangeText = (otpInput: string) => {
-    if (otp.length < length) handleOtpChange(otpInput)
-  }
-  const onKeyPress = ({ nativeEvent }: TextInputKeyPressEvent) => {
-    if (nativeEvent.key === "Backspace" && otp.length > 0) {
-      handleOtpChange(otp.slice(0, otp.length - 1))
-    }
+    if (otpInput.length <= length) handleOtpChange(otpInput)
   }
 
   return (
@@ -39,7 +34,6 @@ function OtpInput({ otp, handleOtpChange, length = 6 }: OtpInputProps) {
             if (node) otpHiddenInput.current = node
           }}
           onChangeText={onChangeText}
-          onKeyPress={onKeyPress}
           value={otp}
           keyboardType="number-pad"
         />
@@ -55,6 +49,7 @@ function OtpInput({ otp, handleOtpChange, length = 6 }: OtpInputProps) {
             value={otp[index] ?? ""}
             key={index}
             caretHidden
+            keyboardType="number-pad"
           />
         ))}
       </View>

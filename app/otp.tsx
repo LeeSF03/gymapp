@@ -6,10 +6,27 @@ import { Link, useLocalSearchParams } from "expo-router"
 import { KeyboardAvoidingView } from "react-native-keyboard-controller"
 import { OtpInput } from "@/components/otp-input"
 import { useState } from "react"
-import { authClient } from "@/lib/auth"
+import { otpScheme } from "@/lib/schema"
+import { $ZodIssue } from "better-auth"
 
-export default function LoginPage() {
+export default function OtpPage() {
   const [otp, setOtp] = useState("")
+  const [otpError, setOtpError] = useState<$ZodIssue[]>([])
+
+  const handleOtpChange = (value: string) => {
+    setOtp(value)
+  }
+  const handleSubmit = () => {
+    const { success, error, data } = otpScheme.safeParse(otp)
+    if (success) {
+      // ... submit otp
+      setOtpError([])
+      console.log({ data })
+    } else {
+      setOtpError(error.issues)
+    }
+  }
+
   const { email, type } = useLocalSearchParams<{
     email: string
     type: "sign-in" | "email-verification " | "forget-password"
@@ -34,8 +51,18 @@ export default function LoginPage() {
           address.
         </Text>
       </View>
-      <View className="w-full gap-y-4">
-        <OtpInput otp={otp} handleOtpChange={setOtp} />
+      <View className="w-full gap-y-1.5">
+        <OtpInput otp={otp} handleOtpChange={handleOtpChange} />
+        {otpError.length > 0 &&
+          otpError.map(({ message }, index) => (
+            <Text
+              key={index}
+              variant="xs"
+              className="mt-0.5 pl-2 text-destructive"
+            >
+              {message}
+            </Text>
+          ))}
       </View>
       <View className="flex flex-row items-center justify-center">
         <Text variant="muted">{"Didn't receive the code? "}</Text>
@@ -45,7 +72,7 @@ export default function LoginPage() {
           </Text>
         </Link>
       </View>
-      <Button size="full" variant="default">
+      <Button size="full" variant="default" onPress={handleSubmit}>
         <Text>Verify</Text>
       </Button>
     </KeyboardAvoidingView>

@@ -22,3 +22,8 @@ export const loginSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters long"),
 })
 export type LoginForm = z.infer<typeof loginSchema>
+
+export const otpScheme = z
+  .string()
+  .regex(/^\d*$/, "OTP can only be numbers")
+  .length(6, "OTP must be a 6-digit number")
