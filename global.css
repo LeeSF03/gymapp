@@ -19,6 +19,8 @@
     --accent: 51 100% 50%;
     --accent-foreground: 240 5% 7%;
     --destructive: 0 84.2% 60.2%;
+    --error: 0 84.2% 60.2%;
+    --warning: 48 100% 67%;
     --border: 240 4% 22%;
     --input: 240 4% 22%;
     --ring: 51 100% 50%;
