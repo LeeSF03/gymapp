@@ -13,7 +13,7 @@ export default function SignUpPage() {
       behavior="padding"
       className="flex-1 items-center justify-center  bg-black px-8"
     >
-      <Text variant="h2" className="mb-8 text-center">
+      <Text variant="h3" className="mb-8 text-center">
         Create Account
       </Text>
       <View className="w-full gap-y-4">
@@ -40,7 +40,7 @@ export default function SignUpPage() {
       <View className="mt-6 flex w-full flex-row items-center gap-3">
         <Checkbox id="terms" checked={true} onCheckedChange={() => {}} />
         <Label onPress={() => {}} htmlFor="terms">
-          I accept to the{" "}
+          I accept the{" "}
           <Link href="/sign-up" className="text-primary">
             Terms and Conditions
           </Link>{" "}
