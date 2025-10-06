@@ -27,7 +27,9 @@ export default function SignUpPage() {
   const router = useRouter()
 
   const onSubmit = (data: SignUpForm) => {
-    console.log({ data })
+    router.push(
+      `/otp?email=${data.email}&type=email-verification&password=${data.password}`
+    )
   }
 
   return (
@@ -119,11 +121,10 @@ export default function SignUpPage() {
             formState: { errors },
           }) => (
             <View className={cn({ "-mb-1.5": errors.confirmPassword })}>
-              <Input
+              <PasswordInput
                 className={cn({ "border-destructive": errors.confirmPassword })}
                 placeholder="Confirm Password"
                 placeholderClassName="text-muted-foreground"
-                secureTextEntry
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}

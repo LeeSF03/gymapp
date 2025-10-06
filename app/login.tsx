@@ -6,8 +6,25 @@ import { Button } from "@/components/ui/button"
 import { Link } from "expo-router"
 import { HorizontalDividerWithChildren } from "@/components/horizontal-divider-with-children"
 import { KeyboardAvoidingView } from "react-native-keyboard-controller"
+import { Controller, useForm } from "react-hook-form"
+import { LoginForm, loginSchema } from "@/lib/schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { cn } from "@/lib/utils"
+import { PasswordInput } from "@/components/ui/password-input"
 
 export default function LoginPage() {
+  const { control, handleSubmit } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
+
+  const onSubmit = (data: LoginForm) => {
+    console.log({ data })
+  }
+
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -30,28 +47,63 @@ export default function LoginPage() {
       </View>
       <View className="w-full gap-y-4">
         <View className="w-full gap-y-4">
-          <Input
-            placeholder="Email"
-            placeholderClassName="text-muted-foreground"
+          <Controller
+            control={control}
+            name="email"
+            render={({
+              field: { onChange, onBlur, value },
+              formState: { errors },
+            }) => (
+              <View className={cn({ "-mb-1.5": errors.email })}>
+                <Input
+                  className={cn({ "border-destructive": errors.email })}
+                  placeholder="Email"
+                  placeholderClassName="text-muted-foreground"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+                {errors.email && (
+                  <Text variant="xs" className="mt-0.5 pl-2 text-destructive">
+                    {errors.email.message}
+                  </Text>
+                )}
+              </View>
+            )}
           />
-          <Input
-            placeholder="Password"
-            placeholderClassName="text-muted-foreground"
+          <Controller
+            control={control}
+            name="password"
+            render={({
+              field: { onChange, onBlur, value },
+              formState: { errors },
+            }) => (
+              <View className={cn({ "-mb-1.5": errors.password })}>
+                <PasswordInput
+                  className={cn({ "border-destructive": errors.email })}
+                  placeholder="Password"
+                  placeholderClassName="text-muted-foreground"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+                {errors.password && (
+                  <Text variant="xs" className="mt-0.5 pl-2 text-destructive">
+                    {errors.password.message}
+                  </Text>
+                )}
+              </View>
+            )}
           />
         </View>
         <Link href="/sign-up" asChild>
-          <Text
-            variant="small"
-            className="py-0.5 text-right text-primary underline"
-          >
+          <Text variant="small" className="py-0.5 text-right text-primary">
             Forgot Password?
           </Text>
         </Link>
-        <Link href="/login" asChild>
-          <Button size="full" variant="default">
-            <Text>Login</Text>
-          </Button>
-        </Link>
+        <Button size="full" variant="default" onPress={handleSubmit(onSubmit)}>
+          <Text>Login</Text>
+        </Button>
       </View>
       <HorizontalDividerWithChildren>
         <Text variant="muted">Or continue with</Text>
