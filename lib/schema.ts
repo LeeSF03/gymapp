@@ -23,7 +23,30 @@ export const loginSchema = z.object({
 })
 export type LoginFormScheme = z.infer<typeof loginSchema>
 
-export const otpScheme = z
+export const otpInputSchema = z
   .string()
   .regex(/^\d*$/, "OTP can only be numbers")
   .length(6, "OTP must be a 6-digit number")
+
+export const otpQueryParamsSignUpSchema = z.object({
+  email: z.email(),
+  type: z.literal("email-verification"),
+  name: z.string(),
+  password: z.string(),
+})
+export const otpQueryParamsForgetPasswordSchema = z.object({
+  email: z.email(),
+  type: z.literal("forget-password"),
+})
+
+export type OtpSignUp = z.infer<typeof otpQueryParamsSignUpSchema>
+export type OtpForgetPassword = z.infer<
+  typeof otpQueryParamsForgetPasswordSchema
+>
+
+export const otpPageQueryParamSchema = z.discriminatedUnion("type", [
+  otpQueryParamsSignUpSchema,
+  otpQueryParamsForgetPasswordSchema,
+])
+
+export type OtpPageQueryParam = z.infer<typeof otpPageQueryParamSchema>
