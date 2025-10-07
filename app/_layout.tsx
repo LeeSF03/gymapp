@@ -13,6 +13,7 @@ import { useColorScheme } from "@/hooks/use-color-scheme"
 
 import "react-native-reanimated"
 import "./../global.css"
+import { authClient } from "@/lib/auth"
 
 export const unstable_settings = {
   // initialRouteName: "welcome",
@@ -21,6 +22,8 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
+  const { data } = authClient.useSession()
+  const isLoggedIn = Boolean(data)
 
   return (
     <KeyboardProvider>
@@ -29,11 +32,16 @@ export default function RootLayout() {
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
           <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="sign-up" options={{ headerShown: false }} />
-            <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Protected guard={!isLoggedIn}>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="sign-up" options={{ headerShown: false }} />
+              <Stack.Screen name="login" options={{ headerShown: false }} />
+            </Stack.Protected>
             <Stack.Screen name="otp" options={{ headerShown: false }} />
-            {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+            <Stack.Protected guard={isLoggedIn}>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack.Protected>
+
             {/* <Stack.Screen */}
             {/*   name="modal" */}
             {/*   options={{ presentation: "modal", title: "Modal" }} */}
