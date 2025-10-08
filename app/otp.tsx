@@ -1,46 +1,68 @@
-import { Image } from "expo-image"
 import { View } from "react-native"
 import { Text } from "@/components/ui/text"
 import { Button } from "@/components/ui/button"
-import { Link, useLocalSearchParams } from "expo-router"
+import { Link, useLocalSearchParams, useRouter } from "expo-router"
 import { KeyboardAvoidingView } from "react-native-keyboard-controller"
 import { OtpInput } from "@/components/otp-input"
 import { useState } from "react"
-import { otpScheme } from "@/lib/schema"
+import {
+  otpInputSchema,
+  OtpPageQueryParam,
+  otpPageQueryParamSchema,
+} from "@/lib/schema"
 import { $ZodIssue } from "better-auth"
 import { OtpHeader } from "@/components/otp/otp-header"
-
-type OtpPageQueryParam =
-  | {
-      email: string
-      type: "sign-in" | "email-verification"
-      password: string
-    }
-  | {
-      email: string
-      type: "forget-password"
-      password: undefined
-    }
+import { authClient } from "@/lib/auth"
 
 export default function OtpPage() {
   const [otp, setOtp] = useState("")
   const [otpError, setOtpError] = useState<$ZodIssue[]>([])
 
+  const router = useRouter()
+  const queryParams = useLocalSearchParams<OtpPageQueryParam>()
+
+  const {
+    success,
+    error,
+    data: parsedQueryParams,
+  } = otpPageQueryParamSchema.safeParse(queryParams)
+  if (!success) {
+    console.log({ error }) // replace with toast
+    router.back()
+    return <></>
+  }
+  const { email, type } = parsedQueryParams
+
   const handleOtpChange = (value: string) => {
     setOtp(value)
   }
-  const handleSubmit = () => {
-    const { success, error, data } = otpScheme.safeParse(otp)
+  const handleSubmit = async () => {
+    const { success, error, data: parsedOtp } = otpInputSchema.safeParse(otp)
     if (success) {
-      // ... submit otp
+      if (type === "email-verification") {
+        const { data: signUpData, error: signUpError } =
+          await authClient.signUp.email({
+            email,
+            password: parsedQueryParams.password,
+            name: parsedQueryParams.name,
+          })
+
+        if (signUpData) {
+          const result = await authClient.emailOtp.checkVerificationOtp({
+            email,
+            type,
+            otp: parsedOtp,
+          })
+          console.log({ result })
+        } else {
+          console.log({ signUpError })
+        }
+      }
       setOtpError([])
-      console.log({ data })
     } else {
       setOtpError(error.issues)
     }
   }
-
-  // const { email, type, password } = useLocalSearchParams<OtpPageQueryParam>()
 
   return (
     <KeyboardAvoidingView

@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { cn } from "@/lib/utils"
 import { TriangleAlert } from "lucide-react-native"
 import { PasswordInput } from "@/components/ui/password-input"
+import { authClient } from "@/lib/auth"
 
 export function SignUpForm() {
   const { control, handleSubmit } = useForm<SignUpFormScheme>({
@@ -25,10 +26,19 @@ export function SignUpForm() {
   })
   const router = useRouter()
 
-  const onSubmit = (data: SignUpFormScheme) => {
-    router.push(
-      `/otp?email=${data.email}&type=email-verification&password=${data.password}`
-    )
+  const onSubmit = async (signUpFormData: SignUpFormScheme) => {
+    console.log({ signUpFormData })
+    const { data, error } = await authClient.emailOtp.sendVerificationOtp({
+      email: signUpFormData.email,
+      type: "email-verification",
+    })
+    if (data?.success) {
+      router.push(
+        `/otp?email=${signUpFormData.email}&password=${signUpFormData.password}&name=${signUpFormData.name}&type=email-verification`
+      )
+    } else {
+      console.log({ error })
+    }
   }
 
   return (
