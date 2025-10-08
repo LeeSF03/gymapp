@@ -5,7 +5,9 @@ import * as SecureStore from "expo-secure-store"
 import { Platform } from "react-native"
 
 const baseURL =
-  Platform.OS === "android" ? "http://10.0.2.2:3000" : "http://localhost:3000"
+  Platform.OS === "android"
+    ? process.env.EXPO_PACKAGER_PROXY_URL
+    : "http://localhost:3000"
 
 export const authClient = createAuthClient({
   baseURL,
