@@ -3,6 +3,7 @@ import { Image } from "expo-image"
 import { Link } from "expo-router"
 import { Button } from "@/components/ui/button"
 import { Text } from "@/components/ui/text"
+import { useUserStoreActions } from "@/hooks/use-user-store"
 
 export default function WelcomePage() {
   return (
