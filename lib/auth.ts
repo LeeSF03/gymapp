@@ -7,7 +7,7 @@ import { credentialVerifierClient } from "./auth-plugins"
 
 const baseURL =
   Platform.OS === "android"
-    ? "http://192.168.0.155:3000"
+    ? process.env.EXPO_PACKAGER_PROXY_URL
     : "http://localhost:3000"
 
 export const authClient = createAuthClient({

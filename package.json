@@ -5,7 +5,7 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo run:android",
+    "android": "cross-env EXPO_PACKAGER_PROXY_URL=http://192.168.0.155:8081 expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"
@@ -64,6 +64,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "eslint-config-prettier": "^10.1.8",
