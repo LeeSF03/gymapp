@@ -1,7 +1,7 @@
-import { useUserStore } from "@/stores/auth-store"
+import { useUserStore } from "@/stores/user-store"
 
 export const useUserName = () => useUserStore((state) => state.name)
-export const UseUserEmail = () => useUserStore((state) => state.email)
+export const useUserEmail = () => useUserStore((state) => state.email)
 export const useIsUserEmailVerified = () =>
   useUserStore((state) => state.emailVerified)
 export const useUserId = () => useUserStore((state) => state.userId)
