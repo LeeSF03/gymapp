@@ -14,7 +14,12 @@ import { PasswordInput } from "@/components/ui/password-input"
 import { authClient } from "@/lib/auth"
 
 export function SignUpForm() {
-  const { control, handleSubmit } = useForm<SignUpFormScheme>({
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<SignUpFormScheme>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
@@ -27,18 +32,34 @@ export function SignUpForm() {
   const router = useRouter()
 
   const onSubmit = async (signUpFormData: SignUpFormScheme) => {
-    console.log({ signUpFormData })
-    const { data, error } = await authClient.emailOtp.sendVerificationOtp({
-      email: signUpFormData.email,
-      type: "email-verification",
+    const { email, password, name } = signUpFormData
+
+    const { error: signUpError } = await authClient.signUp.email({
+      email,
+      password,
+      name,
     })
-    if (data?.success) {
-      router.push(
-        `/otp?email=${signUpFormData.email}&password=${signUpFormData.password}&name=${signUpFormData.name}&type=email-verification`
-      )
-    } else {
-      console.log({ error })
+
+    if (signUpError) {
+      setError("email", { message: signUpError.message })
+      return
     }
+
+    const { error: sendVerificationOtpError } =
+      await authClient.emailOtp.sendVerificationOtp({
+        email,
+        type: "email-verification",
+      })
+
+    if (
+      sendVerificationOtpError &&
+      sendVerificationOtpError.statusText === "INTERNAL_SERVER_ERROR"
+    ) {
+      setError("root", { message: "Something went wrong. Please try again." })
+      return
+    }
+
+    router.push(`/otp?email=${email}&type=email-verification`)
   }
 
   return (
@@ -188,6 +209,11 @@ export function SignUpForm() {
           </View>
         )}
       />
+      {errors.root?.message && (
+        <Text variant="xs" className="mt-0.5 pl-2 text-destructive">
+          {errors.root.message}
+        </Text>
+      )}
       <Link href="/sign-up" asChild>
         <Button
           size="full"

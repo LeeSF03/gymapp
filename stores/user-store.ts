@@ -60,16 +60,14 @@ export const useUserStore = create<UserStore>()(
       ...initialUserState,
       actions: {
         removeUserSession: () => set(initialUserState),
-        setUserSession: (user: Partial<UserState>) => set(user),
+        setUserSession: (user: UserState) => set(user),
         fetchUserSession: async () => {
-          console.log("Fetching user session...")
           const { data, error } = await authClient.getSession()
 
           if (!data) {
             if (error?.code === "SESSION_EXPIRED") set(initialUserState)
             return
           }
-          console.log("Fetched user session:", { data })
 
           const {
             user: { id: userId, name, email, emailVerified },

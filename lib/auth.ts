@@ -3,9 +3,12 @@ import { expoClient } from "@better-auth/expo/client"
 import { emailOTPClient } from "better-auth/client/plugins"
 import * as SecureStore from "expo-secure-store"
 import { Platform } from "react-native"
+import { credentialVerifierClient } from "./auth-plugins"
 
 const baseURL =
-  Platform.OS === "android" ? "http://10.0.2.2:3000" : "http://localhost:3000"
+  Platform.OS === "android"
+    ? "http://192.168.0.155:3000"
+    : "http://localhost:3000"
 
 export const authClient = createAuthClient({
   baseURL,
@@ -16,5 +19,6 @@ export const authClient = createAuthClient({
       storage: SecureStore,
     }),
     emailOTPClient(),
+    credentialVerifierClient(),
   ],
 })

@@ -1,7 +1,7 @@
 import { View } from "react-native"
 import { Text } from "@/components/ui/text"
 import { Button } from "@/components/ui/button"
-import { Link, useLocalSearchParams, useRouter } from "expo-router"
+import { Link, Redirect, useLocalSearchParams, useRouter } from "expo-router"
 import { KeyboardAvoidingView } from "react-native-keyboard-controller"
 import { OtpInput } from "@/components/otp-input"
 import { useState } from "react"
@@ -10,58 +10,106 @@ import {
   OtpPageQueryParam,
   otpPageQueryParamSchema,
 } from "@/lib/schema"
-import { $ZodIssue } from "better-auth"
 import { OtpHeader } from "@/components/otp/otp-header"
 import { authClient } from "@/lib/auth"
+import { useUserStoreActions } from "@/hooks/use-user-store"
 
 export default function OtpPage() {
   const [otp, setOtp] = useState("")
-  const [otpError, setOtpError] = useState<$ZodIssue[]>([])
+  const [otpError, setOtpError] = useState<string[]>([])
 
-  const router = useRouter()
   const queryParams = useLocalSearchParams<OtpPageQueryParam>()
 
-  const {
-    success,
-    error,
-    data: parsedQueryParams,
-  } = otpPageQueryParamSchema.safeParse(queryParams)
+  const router = useRouter()
+  const { setUserSession } = useUserStoreActions()
+  const { success, data: parsedQueryParams } =
+    otpPageQueryParamSchema.safeParse(queryParams)
+
   if (!success) {
-    console.log({ error }) // replace with toast
-    router.back()
-    return <></>
+    return <Redirect href="/" />
   }
-  const { email, type } = parsedQueryParams
 
   const handleOtpChange = (value: string) => {
     setOtp(value)
   }
-  const handleSubmit = async () => {
-    const { success, error, data: parsedOtp } = otpInputSchema.safeParse(otp)
-    if (success) {
-      if (type === "email-verification") {
-        const { data: signUpData, error: signUpError } =
-          await authClient.signUp.email({
-            email,
-            password: parsedQueryParams.password,
-            name: parsedQueryParams.name,
-          })
 
-        if (signUpData) {
-          const result = await authClient.emailOtp.checkVerificationOtp({
-            email,
-            type,
-            otp: parsedOtp,
-          })
-          console.log({ result })
-        } else {
-          console.log({ signUpError })
-        }
+  const sendOtp = async (data: typeof parsedQueryParams & { otp: string }) => {
+    const { email, type, otp } = data
+
+    if (type === "email-verification") {
+      const { data: verficationData, error: verificationError } =
+        await authClient.emailOtp.verifyEmail({
+          email,
+          otp,
+        })
+      const { data: sessionData, error: sessionError } =
+        await authClient.getSession()
+
+      if (verficationData && sessionData) {
+        setUserSession({
+          userId: sessionData.user.id,
+          email: sessionData.user.email,
+          emailVerified: sessionData.user.emailVerified,
+          name: sessionData.user.name,
+          sessionId: sessionData.session.id,
+          expiresAtInEpochMiliSeconds: sessionData.session.expiresAt.getTime(),
+        })
       }
-      setOtpError([])
-    } else {
-      setOtpError(error.issues)
+
+      return verificationError ?? sessionError
+    } else if (type === "sign-in") {
+      const { data: signInData, error: signInError } =
+        await authClient.signIn.emailOtp({
+          email,
+          otp,
+        })
+      const { data: sessionData, error: sessionError } =
+        await authClient.getSession()
+
+      if (signInData && sessionData) {
+        setUserSession({
+          userId: sessionData.user.id,
+          email: sessionData.user.email,
+          emailVerified: sessionData.user.emailVerified,
+          name: sessionData.user.name,
+          sessionId: sessionData.session.id,
+          expiresAtInEpochMiliSeconds: sessionData.session.expiresAt.getTime(),
+        })
+      }
+
+      return signInError ?? sessionError
+    } else if (type === "forget-password") {
+      const { error } = await authClient.emailOtp.resetPassword({
+        email,
+        otp,
+        password: data.password,
+      })
+
+      return error
     }
+
+    return null
+  }
+
+  const handleSubmit = async () => {
+    setOtpError([])
+
+    const { data: parsedOtp, error: parsedOtpError } =
+      otpInputSchema.safeParse(otp)
+
+    if (parsedOtpError) {
+      setOtpError(parsedOtpError.issues.map(({ message }) => message))
+      return
+    }
+
+    let otpError = await sendOtp({ ...parsedQueryParams, otp: parsedOtp })
+
+    if (otpError?.message) {
+      setOtpError([otpError.message])
+      return
+    }
+
+    router.dismissTo("/(tabs)")
   }
 
   return (
@@ -73,13 +121,13 @@ export default function OtpPage() {
       <View className="w-full">
         <OtpInput otp={otp} handleOtpChange={handleOtpChange} />
         {otpError.length > 0 &&
-          otpError.map(({ message }, index) => (
+          otpError.map((errorMessage, index) => (
             <Text
               key={index}
               variant="xs"
               className="mt-0.5 pl-2 text-destructive"
             >
-              {message}
+              {errorMessage}
             </Text>
           ))}
       </View>
