@@ -5,7 +5,7 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "cross-env EXPO_PACKAGER_PROXY_URL=http://192.168.0.155:8081 expo run:android",
+    "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"
@@ -47,10 +47,11 @@
     "react-dom": "19.1.0",
     "react-hook-form": "^7.64.0",
     "react-native": "0.81.4",
-    "react-native-gesture-handler": "~2.28.0",
+    "react-native-gesture-handler": "^2.28.0",
     "react-native-keyboard-controller": "^1.18.6",
     "react-native-mmkv": "^3.3.3",
     "react-native-reanimated": "^4.1.2",
+    "react-native-reanimated-carousel": "^4.0.3",
     "react-native-safe-area-context": "~5.4.0",
     "react-native-screens": "~4.16.0",
     "react-native-svg": "^15.13.0",
