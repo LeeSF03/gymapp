@@ -12,7 +12,7 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive active:bg-destructive/90 dark:bg-destructive/60 shadow-sm shadow-black/5",
         outline:
-          "border-border bg-background active:bg-accent dark:bg-input/30 dark:border-input dark:active:bg-input/50 border shadow-sm shadow-black/5",
+          "border-primary border bg-background active:bg-accent dark:bg-input/30 dark:active:bg-input/50 shadow-sm shadow-black/5",
         secondary:
           "bg-secondary active:bg-secondary/80 shadow-sm shadow-black/5",
         ghost: "active:bg-accent dark:active:bg-accent/50",
@@ -38,7 +38,7 @@ const buttonTextVariants = cva("text-foreground ", {
     variant: {
       default: "text-primary-foreground",
       destructive: "text-white",
-      outline: "",
+      outline: "color-primary",
       secondary: "text-secondary-foreground",
       ghost: "group-active:text-accent-foreground",
       link: "text-primary group-active:underline",
