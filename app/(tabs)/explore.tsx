@@ -1,112 +1,166 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function TabTwoScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
-  );
-}
+const workoutCategories = ['Strength', 'Cardio', 'Yoga', 'Pilates'];
 
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+const featuredWorkouts = [
+  {
+    title: 'Full Body Strength',
+    duration: '45 min',
+    difficulty: 'Intermediate',
   },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  {
+    title: 'Morning Yoga Flow',
+    duration: '30 min',
+    difficulty: 'Beginner',
+  },
+  {
+    title: 'HIIT Cardio Blast',
+    duration: '20 min',
+    difficulty: 'Advanced',
+  },
+];
+
+export default function ExploreScreen() {
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
+      {/* Search Input, Title, and Categories should be near the top */}
+      <ThemedView style={styles.topContainer}>
+        <ThemedText style={styles.title}>Explore Workouts</ThemedText>
+
+        <Input
+          placeholder="Search for workouts..."
+          className="mb-4"
+          style={styles.searchInput} // Apply the search input style
+        />
+      </ThemedView>
+
+      {/* Horizontal ScrollView for Categories */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.categoryScrollView}
+        contentContainerStyle={styles.categoryContentContainer}
+      >
+        {/* We'll loop through the categories */}
+        {workoutCategories.map((category) => (
+          <Button
+            key={category}
+            // Apply conditional styling for the selected button (e.g., Strength)
+            // Assuming 'Strength' is the active/selected category
+            variant={category === 'Strength' ? 'default' : 'outline'}
+            style={[
+              styles.categoryButton,
+              category === 'Strength' && styles.activeCategoryButton
+            ]}
+          >
+            <ThemedText
+              style={category === 'Strength' ? styles.activeCategoryText : styles.categoryText}
+            >
+              {category}
+            </ThemedText>
+          </Button>
+        ))}
+      </ScrollView>
+
+      {/* Main content scrollable area for Featured Workouts */}
+      <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+        <ThemedText style={styles.sectionTitle}>Featured Workouts</ThemedText>
+
+        {featuredWorkouts.map((workout, index) => (
+          <Card key={index} style={styles.workoutCard}>
+            <ThemedView style={styles.workoutCardContent}>
+              <ThemedText style={styles.workoutTitle}>{workout.title}</ThemedText>
+              <ThemedText style={styles.workoutDetails}>
+                {workout.duration} | {workout.difficulty}
+              </ThemedText>
+            </ThemedView>
+          </Card>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
+  );
+} const styles = StyleSheet.create({
+  // Use a separate container for top elements to keep them fixed, but here 
+  // we just use padding for the top elements.
+  topContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 16, // Add some top padding below SafeAreaView
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: 'white', // Ensure title text is white
+  },
+  searchInput: {
+    backgroundColor: '#333', // Darker background for the search bar
+    borderColor: 'transparent',
+    color: 'white',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    height: 48,
+  },
+  // New Styles for Horizontal Categories
+  categoryScrollView: {
+    maxHeight: 50, // Limit the height of the horizontal scroll view
+    marginBottom: 24,
+    paddingLeft: 16, // Match the horizontal padding of the main container
+  },
+  categoryContentContainer: {
+    alignItems: 'center', // Align buttons vertically within the ScrollView
+  },
+  categoryButton: {
+    // Buttons will now only take the width of their content
+    paddingHorizontal: 18,
+    paddingVertical: 8,
+    marginRight: 12, // Space between buttons
+    backgroundColor: 'transparent', // Default non-selected background
+    borderColor: 'white',
+    borderRadius: 20, // Rounded corners for chip look
+  },
+  categoryText: {
+    color: 'white', // Default text color
+    fontWeight: '500',
+  },
+  // Styles for the Active/Selected Category ('Strength')
+  activeCategoryButton: {
+    backgroundColor: '#FFD700', // Gold/Yellow background for selected state
+    borderColor: '#FFD700',
+  },
+  activeCategoryText: {
+    color: 'black', // Black text for selected state
+    fontWeight: 'bold',
+  },
+  // Main Content Styles
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: 'white', // Ensure section title text is white
+  },
+  workoutCard: {
+    marginBottom: 16,
+    padding: 16,
+    backgroundColor: '#222', // Dark card background
+    borderRadius: 8,
+  },
+  workoutCardContent: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  workoutTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  workoutDetails: {
+    fontSize: 14,
+    color: '#AAA', // Lighter color for details
   },
 });
