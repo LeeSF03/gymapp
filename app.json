@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "Predator",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -56,6 +60,12 @@
         "options": {
           "cacheDir": "node_modules/.expo-build-disk-cache"
         }
+      }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "749e19a7-1bee-4441-ba4d-a1fc24bafe75"
       }
     }
   }
