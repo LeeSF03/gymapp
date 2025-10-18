@@ -1,3 +1,4 @@
+import { TanstackQueryProvider } from "@/providers/tanstack-query-provider"
 import {
   DarkTheme,
   DefaultTheme,
@@ -5,10 +6,9 @@ import {
 } from "@react-navigation/native"
 import { PortalHost } from "@rn-primitives/portal"
 import { Stack } from "expo-router"
-import { StatusBar } from "expo-status-bar"
-import { TanstackQueryProvider } from "@/providers/tanstack-query-provider"
-import { KeyboardProvider } from "react-native-keyboard-controller"
 import * as SplashScreen from "expo-splash-screen"
+import { StatusBar } from "expo-status-bar"
+import { KeyboardProvider } from "react-native-keyboard-controller"
 
 import { useColorScheme } from "@/hooks/use-color-scheme"
 import {
@@ -17,10 +17,10 @@ import {
   useUserExpiresAt,
 } from "@/hooks/use-user-store"
 
-import "react-native-reanimated"
-import "./../global.css"
 import { useUserStore } from "@/stores/user-store"
 import { useEffect } from "react"
+import "react-native-reanimated"
+import "./../global.css"
 
 export const unstable_settings = {
   initialRouteName: "index",
@@ -51,12 +51,12 @@ export default function RootLayout() {
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
           <Stack>
-            <Stack.Protected guard={!isAuthenticated}>
+            <Stack.Protected guard={isAuthenticated}>
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen name="sign-up" options={{ headerShown: false }} />
               <Stack.Screen name="login" options={{ headerShown: false }} />
             </Stack.Protected>
-            <Stack.Protected guard={isAuthenticated}>
+            <Stack.Protected guard={!isAuthenticated}>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             </Stack.Protected>
             <Stack.Screen name="otp" options={{ headerShown: false }} />
